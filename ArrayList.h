@@ -29,10 +29,10 @@ public:
 
 	// Get an item at location
 	TYPE & getAt(int index) const throw (std::out_of_range);
-/*	
+	
 	//Clear everything
 	void clearAll();
-
+/*
 	////// Clear out any instrumentation
 	////void clearStatistics();
 
@@ -93,6 +93,7 @@ inline void ArrayList<TYPE>::insertAt(int index, const TYPE & newEntry) throw(st
 	{
 
 	}
+	size++;
 }
 
 template<class TYPE>
