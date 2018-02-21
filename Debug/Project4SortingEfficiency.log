@@ -1,5 +1,0 @@
-﻿  Test.cpp
-  ArrayList.cpp
-c:\users\chhod\desktop\repos\project4sortingefficiency\arraylist.cpp(9): error C2995: 'ArrayList<TYPE>::ArrayList(void)': function template has already been defined
-  c:\users\chhod\desktop\repos\project4sortingefficiency\arraylist.h(8): note: see declaration of 'ArrayList<TYPE>::ArrayList'
-  Generating Code...
