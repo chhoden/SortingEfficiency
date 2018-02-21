@@ -2,14 +2,12 @@
 #include "ListInterface.h"
 
 template <class TYPE>
-class ArrayList: public ListInterface<TYPE>
+class ArrayList : public ListInterface<TYPE>
 {
 public:
 	ArrayList();
-	/*
 	~ArrayList();
 
-	
 	//TYPE & operator[](int) const  throw (std::out_of_range);
 
 	// Tell of it is empty
@@ -26,6 +24,7 @@ public:
 
 	// Append to end
 	void append(const TYPE &);
+	/*
 
 	////void swap(int from, int to) throw(std::out_of_range);
 
@@ -45,10 +44,88 @@ public:
 	////int getNumInsertAt() const;
 	////int getNumAppends() const;
 	*/
-
 private:
-	TYPE arr[10];
+	static const int DEFAULT_CAPACITY = 10;
+	TYPE* arr;
 	int size;
 	int capacity;
 };
-#include "ArrayList.cpp"
+
+template<class TYPE>
+inline ArrayList<TYPE>::ArrayList()
+{
+	arr = new TYPE[DEFAULT_CAPACITY];
+	size = 0;
+	capacity = DEFAULT_CAPACITY;
+}
+
+template<class TYPE>
+inline ArrayList<TYPE>::~ArrayList()
+{
+	size = 0;
+	capacity = 0;
+	delete[] arr;
+}
+
+template<class TYPE>
+inline bool ArrayList<TYPE>::isEmpty() const
+{
+	if (size == 0)
+	{
+		return true;
+	}
+	return false;
+}
+
+template<class TYPE>
+inline int ArrayList<TYPE>::getSize() const
+{
+	return size;
+}
+
+template<class TYPE>
+inline void ArrayList<TYPE>::insertAt(int index, const TYPE & newEntry) throw(std::out_of_range)
+{
+	if (index < 0 || index >= capacity)
+	{
+		throw out_of_range("Index out of bound");
+	}
+	for (int i = 0; i < capacity; i++)
+	{
+
+	}
+}
+
+template<class TYPE>
+inline void ArrayList<TYPE>::removeAt(int index) throw(std::out_of_range)
+{
+	if (size == 0 || index < 0 || index >= capacity)
+	{
+		throw out_of_range("Index out of bound");
+	}
+
+	delete arr[index];
+	for (int i = index; i < size; i++) {
+		int temp = arr[i + 1];
+		arr[i] = temp;
+	}
+}
+
+template<class TYPE>
+inline void ArrayList<TYPE>::append(const TYPE & newEntry)
+{
+	if (size == capacity)
+	{
+		int* biggerArr = new int [capacity*2];
+		capacity *= 2;
+		for (int i = 0; i < size; i++) {
+			biggerArr[i] = arr[i];
+		}
+		arr = biggerArr;
+		biggerArr[size] = newEntry;
+		size++;
+	}
+	arr[size] = newEntry;
+	size++;
+}
+
