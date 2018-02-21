@@ -11,7 +11,6 @@
 template <class TYPE>
 class ListInterface {
 public:
-	/*
 	// Note this one is not a pure virtual.
 	virtual ~ListInterface() { }
 
@@ -34,7 +33,7 @@ public:
 	// Append to end
 	virtual void append(const TYPE &) = 0;
 	
-
+	/*
 	virtual void swap(int from, int to) throw(std::out_of_range) = 0;
 
 	// Get an item at location
