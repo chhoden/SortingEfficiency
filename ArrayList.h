@@ -4,6 +4,12 @@
 template <class TYPE>
 class ArrayList : public ListInterface<TYPE>
 {
+	static int numAccess;
+	static int numSwap;
+	static int numRemove;
+	static int numInsert;
+	static int numAppend;
+
 public:
 	ArrayList();
 	~ArrayList();
@@ -29,22 +35,21 @@ public:
 
 	// Get an item at location
 	TYPE & getAt(int index) const throw (std::out_of_range);
-	
+
 	//Clear everything
 	void clearAll();
-/*
-	////// Clear out any instrumentation
-	////void clearStatistics();
-
-	////// Provide statistics on number of times method was performed
-	////int getNumAccess() const;    // operator [] OR getAt
-	////int getNumSwap() const;
-	////int getNumRemove() const;
-	////int getNumInsertAt() const;
-	////int getNumAppends() const;
-	*/
+	// Clear out any instrumentation
+	void clearStatistics();
+	
+	// Provide statistics on number of times method was performed
+	int getNumAccess() const;    // operator [] OR getAt
+	int getNumSwap() const;
+	int getNumRemove() const;
+	int getNumInsertAt() const;
+	int getNumAppends() const;
+	
 private:
-	static const int DEFAULT_CAPACITY = 10;\
+	static const int DEFAULT_CAPACITY = 10;
 	TYPE* arr;
 	int size;
 	int capacity;
@@ -148,5 +153,54 @@ inline TYPE & ArrayList<TYPE>::getAt(int index) const throw(std::out_of_range)
 		throw std::out_of_range("Index out of bound");
 	}
 	return arr[index];
+}
+
+template<class TYPE>
+inline void ArrayList<TYPE>::clearAll()
+{
+	size == 0;
+	capacity = 0;
+	delete[]arr;
+}
+
+template<class TYPE>
+inline void ArrayList<TYPE>::clearStatistics()
+{
+	numAccess = 0;
+	numSwap = 0;
+	numRemove = 0;
+	numInsert = 0;
+	numAppend = 0;
+
+}
+
+template<class TYPE>
+inline int ArrayList<TYPE>::getNumAccess() const
+{
+	return numAccess;
+}
+
+template<class TYPE>
+inline int ArrayList<TYPE>::getNumSwap() const
+{
+	return numSwap;
+}
+
+template<class TYPE>
+inline int ArrayList<TYPE>::getNumRemove() const
+{
+	return numRemove;
+}
+
+template<class TYPE>
+inline int ArrayList<TYPE>::getNumInsertAt() const
+{
+	return numInsert;
+}
+
+template<class TYPE>
+inline int ArrayList<TYPE>::getNumAppends() const
+{
+	return numAppend;
 }
 
