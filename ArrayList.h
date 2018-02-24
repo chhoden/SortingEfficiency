@@ -1,20 +1,22 @@
+/*
+@Author Chhoden Gurung
+@Assignment HW4 - SortingEfficiency
+@Date 02/23/18
+*/
+
 #pragma once
 #include "ListInterface.h"
 
 template <class TYPE>
 class ArrayList : public ListInterface<TYPE>
 {
-	static int numAccess;
-	static int numSwap;
-	static int numRemove;
-	static int numInsert;
-	static int numAppend;
-
 public:
 	ArrayList();
+	ArrayList(int capacity);
+	ArrayList(const ArrayList<TYPE> &source);
 	~ArrayList();
 
-	//TYPE & operator[](int) const  throw (std::out_of_range);
+	TYPE & operator[](int) const  throw (std::out_of_range);
 
 	// Tell of it is empty
 	bool isEmpty() const;
@@ -36,24 +38,51 @@ public:
 	// Get an item at location
 	TYPE & getAt(int index) const throw (std::out_of_range);
 
+	// Replaces the element at the specified index
+	void set(int index, const TYPE & newEntry) throw (std::out_of_range);
+
+
+	// Print all the elements in arrayList
+	void print();
+
 	//Clear everything
 	void clearAll();
 	// Clear out any instrumentation
 	void clearStatistics();
-	
+
 	// Provide statistics on number of times method was performed
 	int getNumAccess() const;    // operator [] OR getAt
 	int getNumSwap() const;
 	int getNumRemove() const;
 	int getNumInsertAt() const;
 	int getNumAppends() const;
-	
+
 private:
-	static const int DEFAULT_CAPACITY = 10;
+	static const int DEFAULT_CAPACITY = 2;
+
+	static int numAccess;
+	static int numSwap;
+	static int numRemove;
+	static int numInsert;
+	static int numAppend;
+
 	TYPE* arr;
 	int size;
 	int capacity;
+
+	void growArr();
 };
+
+template<class TYPE>
+int ArrayList<TYPE>::numAccess = 0;
+template<class TYPE>
+int ArrayList<TYPE>::numSwap = 0;
+template<class TYPE>
+int ArrayList<TYPE>::numRemove = 0;
+template<class TYPE>
+int ArrayList<TYPE>::numInsert = 0;
+template<class TYPE>
+int ArrayList<TYPE>::numAppend = 0;
 
 template<class TYPE>
 inline ArrayList<TYPE>::ArrayList()
@@ -64,21 +93,43 @@ inline ArrayList<TYPE>::ArrayList()
 }
 
 template<class TYPE>
+inline ArrayList<TYPE>::ArrayList(int cap)
+{
+	arr = new TYPE[cap];
+	size = 0;
+	capacity = cap;
+}
+
+template<class TYPE>
+inline ArrayList<TYPE>::ArrayList(const ArrayList<TYPE> &source)
+{
+	size = source.getSize();
+	arr = new TYPE[size];
+	capacity = size;
+
+	for (int i = 0; i < size; i++) {
+		arr[i] = source[i];
+	}
+}
+
+template<class TYPE>
 inline ArrayList<TYPE>::~ArrayList()
 {
-	size = 0;
-	capacity = 0;
-	delete[] arr;
+	while (size != 0) {
+		removeAt(0);
+	}
+}
+
+template<class TYPE>
+inline TYPE & ArrayList<TYPE>::operator[](int index) const throw(std::out_of_range)
+{
+	return getAt(index);
 }
 
 template<class TYPE>
 inline bool ArrayList<TYPE>::isEmpty() const
 {
-	if (size == 0)
-	{
-		return true;
-	}
-	return false;
+	return size == 0;
 }
 
 template<class TYPE>
@@ -90,15 +141,20 @@ inline int ArrayList<TYPE>::getSize() const
 template<class TYPE>
 inline void ArrayList<TYPE>::insertAt(int index, const TYPE & newEntry) throw(std::out_of_range)
 {
-	if (index < 0 || index >= capacity)
+	if (index < 0 || index > size)
 	{
 		throw std::out_of_range("Index out of bound");
 	}
-	for (int i = 0; i < capacity; i++)
-	{
 
+	growArr();
+
+	for (int i = size; i > index; i--)
+	{
+		arr[i] = arr[i - 1];
 	}
+	arr[index] = newEntry;
 	size++;
+	numInsert++;
 }
 
 template<class TYPE>
@@ -110,57 +166,74 @@ inline void ArrayList<TYPE>::removeAt(int index) throw(std::out_of_range)
 	}
 
 	for (int i = index; i < size; i++) {
-		int temp = arr[i + 1];
+		TYPE temp = arr[i + 1];
 		arr[i] = temp;
 	}
 	size--;
+	numRemove++;
 }
 
 template<class TYPE>
 inline void ArrayList<TYPE>::append(const TYPE & newEntry)
 {
-	if (size == capacity)
-	{
-		int* biggerArr = new int[capacity * 2];
-		capacity *= 2;
-		for (int i = 0; i < size; i++) {
-			biggerArr[i] = arr[i];
-		}
-		arr = biggerArr;
-		biggerArr[size] = newEntry;
-		size++;
-	}
+	growArr();
 	arr[size] = newEntry;
 	size++;
+	numAppend++;
 }
 
 template<class TYPE>
 inline void ArrayList<TYPE>::swap(int from, int to) throw(std::out_of_range)
 {
-	if (from < 0 || from >= capacity || to < 0 || to >= capacity)
+	if (from < 0 || from >= size || to < 0 || to >= size)
 	{
 		throw std::out_of_range("Index out of bound");
 	}
 	TYPE temp = arr[from];
 	arr[from] = arr[to];
 	arr[to] = temp;
+	numSwap++;
 }
 
 template<class TYPE>
 inline TYPE & ArrayList<TYPE>::getAt(int index) const throw(std::out_of_range)
 {
-	if (index < 0 || index >= capacity) {
+	if (index < 0 || index >= size) {
 		throw std::out_of_range("Index out of bound");
 	}
 	return arr[index];
+	numAccess++;
+}
+
+template<class TYPE>
+inline void ArrayList<TYPE>::set(int index, const TYPE & newEntry) throw(std::out_of_range)
+{
+	if (index < 0 || index > size)
+	{
+		throw std::out_of_range("Index out of bound");
+	}
+
+	arr[index] = newEntry;
+	size++;
+	numInsert++;
+}
+
+template<class TYPE>
+inline void ArrayList<TYPE>::print()
+{
+	cout << "[";
+	for (int i = 0; i < size; i++) {
+		cout << getAt(i) << ",";
+	}
+	cout << "]" << endl;
 }
 
 template<class TYPE>
 inline void ArrayList<TYPE>::clearAll()
 {
-	size == 0;
+	size = 0;
 	capacity = 0;
-	delete[]arr;
+	delete[] arr;
 }
 
 template<class TYPE>
@@ -171,7 +244,6 @@ inline void ArrayList<TYPE>::clearStatistics()
 	numRemove = 0;
 	numInsert = 0;
 	numAppend = 0;
-
 }
 
 template<class TYPE>
@@ -202,5 +274,18 @@ template<class TYPE>
 inline int ArrayList<TYPE>::getNumAppends() const
 {
 	return numAppend;
+}
+
+template<class TYPE>
+inline void ArrayList<TYPE>::growArr()
+{
+	if (size == capacity) {
+		TYPE* biggerArr = new TYPE[capacity*2];
+		for (int i = 0; i < size; i++) {
+			biggerArr[i] = arr[i];
+		}
+		arr = biggerArr;
+		capacity *= 2;
+	}
 }
 

@@ -1,3 +1,9 @@
+/*
+@Author Chhoden Gurung
+@Assignment HW4 - SortingEfficiency
+@Date 02/23/18
+*/
+
 #ifndef LIST_INTERFACE_H
 #define LIST_INTERFACE_H
 #include <stdexcept>
@@ -29,11 +35,10 @@ public:
 
 	// delete at location
 	virtual void removeAt(int index) throw (std::out_of_range) = 0;
-	
+
 	// Append to end
 	virtual void append(const TYPE &) = 0;
-	
-	/*
+
 	virtual void swap(int from, int to) throw(std::out_of_range) = 0;
 
 	// Get an item at location
@@ -51,6 +56,6 @@ public:
 	virtual int getNumRemove() const = 0;
 	virtual int getNumInsertAt() const = 0;
 	virtual int getNumAppends() const = 0;
-	*/
+
 };
 #endif
