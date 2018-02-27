@@ -21,7 +21,7 @@ public:
 	virtual ~ListInterface() { }
 
 	// The easy way to access an element
-	//virtual TYPE & operator[] (int) const  throw (std::out_of_range) = 0;
+	virtual TYPE & operator[] (int) const  throw (std::out_of_range) = 0;
 
 	// Tell of it is empty
 	virtual bool isEmpty() const = 0;

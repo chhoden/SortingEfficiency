@@ -11,7 +11,8 @@ using namespace std;
 
 // Driver program
 int main(int argc, char* argv[]) {
-	bool printSortedFile = false;
+	string filename;
+	bool printSortedFile;
 
 	if (argc < 2) {
 		cout << "Missing arguments!!" << endl;
@@ -19,16 +20,16 @@ int main(int argc, char* argv[]) {
 	}
 
 	if (argc == 3) {
+		filename = argv[2];
 		printSortedFile = true;
 	}
-
-	SortFunction sf;
-	if (printSortedFile) {
-		sf.readFile(argv[2]);
-	}
 	else {
-		cout << argv[1];
+		filename = argv[1];
+		printSortedFile = false;
 	}
+
+	SortFunction sf(filename, printSortedFile);
+	sf.sort();
 
 	return 0;
 }

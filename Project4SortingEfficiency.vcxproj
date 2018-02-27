@@ -126,7 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="arrayListTest.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="sortStatistics.cpp" />
     <ClCompile Include="SortFunction.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <cstdio>
+#include <string>
 #include <iostream>
 #include <fstream>
 #include "ArrayList.h"
@@ -15,16 +17,32 @@ using namespace std;
 class SortFunction
 {
 public:
+	//Constructors
+	SortFunction();
+	SortFunction(const string filename, const bool printSortedFile);
+
+	//Insertion sort
 	template <class TYPE>
-	void selectionSort(ArrayList<TYPE> &list);
+	void insertionSort(ArrayList<TYPE> &list);
+
+	//Merge sort
 	template <class TYPE>
 	void mergeSort(ArrayList<TYPE> &list);
+
+	//Quick sort
 	template <class TYPE>
 	void quickSort(ArrayList<TYPE> &list);
-	void readFile(const string filename);
-	void test();
+
+	//Helper functions
+	void sort();
+	void readFile();
 
 private:
+	string filename;
+	bool printSortedFile;
+	ArrayList<int> originalList;
+
+	//Helper functions for sort functions
 	template <class TYPE>
 	void mergeSort(ArrayList<TYPE> &list, int first, int last);
 	template <class TYPE>

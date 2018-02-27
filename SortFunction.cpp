@@ -8,27 +8,43 @@
 
 using namespace std;
 
-template<class TYPE>
-void SortFunction::selectionSort(ArrayList<TYPE> &list)
+//Default constructor
+SortFunction::SortFunction()
 {
-	int minIndex;
-	for (int i = 0; i < list.getSize() - 1; i++) {
-		minIndex = i;
-		for (int j = i + 1; j < list.getSize(); j++) {
-			if (list[j] < list[minIndex]) {
-				minIndex = j;
-			}
+	filename = "";
+	printSortedFile = false;
+}
+
+// Constructor 
+SortFunction::SortFunction(const string fn, const bool printsf)
+{
+	filename = fn;
+	printSortedFile = printsf;
+	readFile();
+}
+
+//Insertion sort
+template<class TYPE>
+void SortFunction::insertionSort(ArrayList<TYPE> &list)
+{
+	int i, j, tmp;
+	for (i = 1; i < list.getSize(); i++) {
+		j = i;
+		while (j > 0 && list[j - 1] > list[j]) {
+			list.swap(j - 1, j);
+			j--;
 		}
-		list.swap(minIndex, i);
 	}
 }
 
+//Quick sort
 template<class TYPE>
 void SortFunction::quickSort(ArrayList<TYPE> &list)
 {
 	quickSort(list, 0, list.getSize() - 1);
 }
 
+//Quick sort helper function
 template<class TYPE>
 void SortFunction::quickSort(ArrayList<TYPE> &list, int low, int high)
 {
@@ -39,6 +55,7 @@ void SortFunction::quickSort(ArrayList<TYPE> &list, int low, int high)
 	}
 }
 
+//Helper function for quick sort to partition an array
 template<class TYPE>
 int SortFunction::partition(ArrayList<TYPE> &list, int low, int high) {
 	int pivot = list[high];
@@ -55,12 +72,14 @@ int SortFunction::partition(ArrayList<TYPE> &list, int low, int high) {
 	return (idx + 1);
 }
 
+//Merge sort
 template<class TYPE>
 void SortFunction::mergeSort(ArrayList<TYPE> &list)
 {
 	mergeSort(list, 0, list.getSize() - 1);
 }
 
+//Helper function that recursively breaks bigger unsorted array into tiny array
 template<class TYPE>
 void SortFunction::mergeSort(ArrayList<TYPE> &list, int first, int last)
 {
@@ -75,6 +94,7 @@ void SortFunction::mergeSort(ArrayList<TYPE> &list, int first, int last)
 	}
 }
 
+//A helper function to sort and merge each tiny array into the original big array
 template<class TYPE>
 void SortFunction::merge(ArrayList<TYPE> &list, int first, int mid, int last)
 {
@@ -92,79 +112,117 @@ void SortFunction::merge(ArrayList<TYPE> &list, int first, int mid, int last)
 		right.append(list[mid + 1 + j]);
 	}
 
-	left.print();
-	right.print();
-
 	i = j = 0;
 	k = first;
 
 	while (i < n1 && j < n2) {
 		if (left[i] <= right[j]) {
-			list.set(k, left[i]);
+			list.removeAt(k);
+			list.insertAt(k, left[i]);
 			i++;
 		}
 		else {
-			list.set(k, right[j]);
+			list.removeAt(k);
+			list.insertAt(k, right[j]);
 			j++;
 		}
+		k++;
 	}
 
 	while (i < n1) {
-		list.set(k, left[i]);
+		list.removeAt(k);
+		list.insertAt(k, left[i]);
 		i++;
 		k++;
 	}
 
 	while (j < n2) {
-		list.set(k, right[j]);
+		list.removeAt(k);
+		list.insertAt(k, right[j]);
 		j++;
 		k++;
 	}
 }
 
-void SortFunction::readFile(const string fileName) throw (logic_error)
+// A function to sort the array using Insertion, Quick and Merge sorts and prints the statistics.
+void SortFunction::sort()
 {
-	//test();
-	int num;
-	ifstream myFile(fileName);
+	char line[350];
+	cout << "Filename: " << filename << endl;
+	cout << "Number of items: " << originalList.getSize() << endl << endl;
 
-	ArrayList<int> list1;
+	int j = 0;;
+	j = sprintf_s(line + j, 350 - j, "Number of: %14s %10s %10s %10s %10s\n", "Access", "Swap", "Remove", "InsertAt", "Append");
+
+	originalList.clearStatistics();
+	ArrayList<int> insertionList(originalList);
+	insertionSort(insertionList);
+	j += sprintf_s(
+		line + j,
+		350 - j,
+		"InsertionSort: %10d %10d %10d %10d %10d\n",
+		insertionList.getNumAccess(),
+		insertionList.getNumSwap(),
+		insertionList.getNumRemove(),
+		insertionList.getNumInsertAt(),
+		insertionList.getNumAppends()
+	);
+
+	originalList.clearStatistics();
+	ArrayList<int> quickList(originalList);
+	quickSort(quickList);
+	j += sprintf_s(
+		line + j,
+		350 - j,
+		"QuickSort: %14d %10d %10d %10d %10d\n",
+		quickList.getNumAccess(),
+		quickList.getNumSwap(),
+		quickList.getNumRemove(),
+		quickList.getNumInsertAt(),
+		quickList.getNumAppends()
+	);
+
+	originalList.clearStatistics();
+	ArrayList<int> mergeList(originalList);
+	mergeSort(mergeList);
+	j += sprintf_s(
+		line + j,
+		350 - j,
+		"MergeSort: %14d %10d %10d %10d %10d\n",
+		mergeList.getNumAccess(),
+		mergeList.getNumSwap(),
+		mergeList.getNumRemove(),
+		mergeList.getNumInsertAt(),
+		mergeList.getNumAppends()
+	);
+
+	if (printSortedFile) {
+		cout << "Original List:" << endl;
+		originalList.print();
+
+		cout << "Insertion Sort Results:" << endl;
+		insertionList.print();
+
+		cout << "Quick Sort Results:" << endl;
+		quickList.print();
+
+		cout << "Merge Sort Results:" << endl;
+		mergeList.print();
+
+		cout << endl << endl;
+	}
+
+	printf_s(line, j);
+}
+
+//A function to read a file line by line and then store it into an arrayList
+void SortFunction::readFile() throw (logic_error)
+{
+	int num;
+	ifstream myFile(filename);
 
 	while (myFile >> num)
 	{
-		list1.append(num);
+		originalList.append(num);
 	}
-
-	ArrayList<int> list2(list1);
-	ArrayList<int> list3(list1);
-
-	list1.print();
-	selectionSort(list1);
-	list1.print();
-
-	list2.print();
-	quickSort(list2);
-	list2.print();
-
-	list3.print();
-	mergeSort(list3);
-	list3.print();
-}
-
-void SortFunction::test()
-{
-	ArrayList<int> list;
-	list.append(38);
-	list.append(27);
-	list.append(43);
-	list.append(3);
-	list.append(9);
-	list.append(82);
-	list.append(10);
-
-	list.print();
-	selectionSort(list);
-	quickSort(list);
-	//mergeSort(list);
-	list.print();
 }

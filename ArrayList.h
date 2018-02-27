@@ -11,11 +11,15 @@ template <class TYPE>
 class ArrayList : public ListInterface<TYPE>
 {
 public:
+	// Constructors 
 	ArrayList();
 	ArrayList(int capacity);
 	ArrayList(const ArrayList<TYPE> &source);
+
+	//Destructor
 	~ArrayList();
 
+	// The easy way to access an element
 	TYPE & operator[](int) const  throw (std::out_of_range);
 
 	// Tell of it is empty
@@ -37,10 +41,6 @@ public:
 
 	// Get an item at location
 	TYPE & getAt(int index) const throw (std::out_of_range);
-
-	// Replaces the element at the specified index
-	void set(int index, const TYPE & newEntry) throw (std::out_of_range);
-
 
 	// Print all the elements in arrayList
 	void print();
@@ -109,6 +109,7 @@ inline ArrayList<TYPE>::ArrayList(const ArrayList<TYPE> &source)
 
 	for (int i = 0; i < size; i++) {
 		arr[i] = source[i];
+		numAppend++;
 	}
 }
 
@@ -201,31 +202,17 @@ inline TYPE & ArrayList<TYPE>::getAt(int index) const throw(std::out_of_range)
 	if (index < 0 || index >= size) {
 		throw std::out_of_range("Index out of bound");
 	}
-	return arr[index];
 	numAccess++;
-}
-
-template<class TYPE>
-inline void ArrayList<TYPE>::set(int index, const TYPE & newEntry) throw(std::out_of_range)
-{
-	if (index < 0 || index > size)
-	{
-		throw std::out_of_range("Index out of bound");
-	}
-
-	arr[index] = newEntry;
-	size++;
-	numInsert++;
+	return arr[index];
 }
 
 template<class TYPE>
 inline void ArrayList<TYPE>::print()
 {
-	cout << "[";
 	for (int i = 0; i < size; i++) {
-		cout << getAt(i) << ",";
+		cout << getAt(i) << " ";
 	}
-	cout << "]" << endl;
+	cout << endl;
 }
 
 template<class TYPE>
